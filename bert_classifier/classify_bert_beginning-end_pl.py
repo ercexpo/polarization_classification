@@ -1,13 +1,13 @@
 import torch
 import pandas as pd
-from transformers import XLNetTokenizer
+from transformers import BertTokenizer
 import load_data_pl as load_data
 import sys, time, datetime, random
 #from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, classification_report
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
-from transformers import XLNetForSequenceClassification, AdamW, XLNetConfig
+from transformers import BertForSequenceClassification, AdamW, BertConfig
 from transformers import get_linear_schedule_with_warmup
 import numpy as np
 import krippendorff
@@ -41,12 +41,12 @@ def beginning_end(text):
 comments_mod = [beginning_end(comment) for comment in comments]
 val_comments_mod = [beginning_end(comment) for comment in val_comments]
 
-# Load the XLNet tokenizer.
-print('Loading XLNet tokenizer...')
-#tokenizer = XLNetTokenizer.from_pretrained('xlnet-base-cased', do_lower_case=False)
-tokenizer = XLNetTokenizer.from_pretrained('xlnet-base-cased')
+# Load the Bert tokenizer.
+print('Loading Bert tokenizer...')
+#tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
+tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased')
 
-#encode inputs using XLNet tokenizer
+#encode inputs using Bert tokenizer
 input_ids = []
 val_input_ids = []
 
@@ -107,7 +107,7 @@ validation_masks = torch.tensor(val_attention_masks)
 
 # The DataLoader needs to know our batch size for training, so we specify it
 # here.
-# For fine-tuning XLNet on a specific task, the authors recommend a batch size of
+# For fine-tuning Bert on a specific task, the authors recommend a batch size of
 # 16 or 32.
 
 batch_size = 6
@@ -122,10 +122,10 @@ validation_data = TensorDataset(validation_inputs, validation_masks, validation_
 validation_sampler = SequentialSampler(validation_data)
 validation_dataloader = DataLoader(validation_data, sampler=validation_sampler, batch_size=batch_size)
 
-# Load XLNetForSequenceClassification, the pretrained XLNet model with a single
+# Load BertForSequenceClassification, the pretrained Bert model with a single
 # linear classification layer on top.
-model = XLNetForSequenceClassification.from_pretrained(
-    "xlnet-base-cased", # Use the 12-layer XLNet model, with an uncased vocab.
+model = BertForSequenceClassification.from_pretrained(
+    "bert-base-multilingual-cased", # Use the 12-layer Bert model, with an uncased vocab.
     num_labels = 2, # The number of output labels--2 for binary classification.
                     # You can increase this for multi-class tasks.
     output_attentions = False, # Whether the model returns attentions weights.
@@ -239,7 +239,7 @@ for epoch_i in range(0, epochs):
         # This will return the loss (rather than the model output) because we
         # have provided the `labels`.
         # The documentation for this `model` function is here:
-        # https://huggingface.co/transformers/v2.2.0/model_doc/xlnet.html#transformers.XLNetForSequenceClassification
+        # https://huggingface.co/transformers/v2.2.0/model_doc/bert.html#transformers.BertForSequenceClassification
         outputs = model(b_input_ids,
                     token_type_ids=None,
                     attention_mask=b_input_mask,
@@ -320,7 +320,7 @@ for epoch_i in range(0, epochs):
             # token_type_ids is the same as the "segment ids", which
             # differentiates sentence 1 and 2 in 2-sentence tasks.
             # The documentation for this `model` function is here:
-            # https://huggingface.co/transformers/v2.2.0/model_doc/xlnet.html#transformers.XLNetForSequenceClassification
+            # https://huggingface.co/transformers/v2.2.0/model_doc/bert.html#transformers.BertForSequenceClassification
             outputs = model(b_input_ids,
                             token_type_ids=None,
                             attention_mask=b_input_mask)
