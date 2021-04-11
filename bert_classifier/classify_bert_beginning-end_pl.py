@@ -44,7 +44,7 @@ val_comments_mod = [beginning_end(comment) for comment in val_comments]
 # Load the XLNet tokenizer.
 print('Loading XLNet tokenizer...')
 #tokenizer = XLNetTokenizer.from_pretrained('xlnet-base-cased', do_lower_case=False)
-tokenizer = XLNetTokenizer.from_pretrained('xlnet-base-uncased')
+tokenizer = XLNetTokenizer.from_pretrained('xlnet-base-cased')
 
 #encode inputs using XLNet tokenizer
 input_ids = []
@@ -125,7 +125,7 @@ validation_dataloader = DataLoader(validation_data, sampler=validation_sampler, 
 # Load XLNetForSequenceClassification, the pretrained XLNet model with a single
 # linear classification layer on top.
 model = XLNetForSequenceClassification.from_pretrained(
-    "xlnet-base-uncased", # Use the 12-layer XLNet model, with an uncased vocab.
+    "xlnet-base-cased", # Use the 12-layer XLNet model, with an uncased vocab.
     num_labels = 2, # The number of output labels--2 for binary classification.
                     # You can increase this for multi-class tasks.
     output_attentions = False, # Whether the model returns attentions weights.
