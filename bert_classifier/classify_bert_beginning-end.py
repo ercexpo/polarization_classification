@@ -352,7 +352,7 @@ for epoch_i in range(0, epochs):
     print("  F1: {0:.2f}".format(f1_score(y_true,y_pred,average="macro")))
     print("  Weighted F1: {0:.2f}".format(f1_score(y_true, y_pred, average="weighted")))
     print("  Krippendorff'a alpha: {0:.2f}".format(krippendorff.alpha(reliability_data=[y_true,y_pred])))
-    print(classification_report(y_true, y_pres))
+    print(classification_report(y_true, y_pred))
     print("  Validation took: {:}".format(format_time(time.time() - t0)))
 
 

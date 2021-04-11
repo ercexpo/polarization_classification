@@ -3,12 +3,13 @@ import torch
 from transformers import BertTokenizer
 import load_data
 import sys, time, datetime, random, csv
-from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 from transformers import BertForSequenceClassification, AdamW, BertConfig
 from transformers import get_linear_schedule_with_warmup
 import numpy as np
+import krippendorff
 
 # If there's a GPU available...
 if torch.cuda.is_available():
@@ -25,9 +26,9 @@ else:
     print('No GPU available, using the CPU instead.')
     device = torch.device("cpu")
 
-model = BertForSequenceClassification.from_pretrained('/app/incivility/models/bert_5000_03-06-20')
+model = BertForSequenceClassification.from_pretrained('models/bert_beginning_end')
 #config = BertConfig.from_json_file('../models/bert_classifier_2epoch_256size/config.json')
-tokenizer = BertTokenizer.from_pretrained('/app/incivility/models/bert_5000_03-06-20')
+tokenizer = BertTokenizer.from_pretrained('models/bert_beginning_end')
 
 model.cuda()
 
@@ -104,7 +105,10 @@ print('    DONE.')
 flat_predictions = [item for sublist in predictions for item in sublist]
 flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
 
-with open('../data/predictions/incivility_predictions_5000_03-06-20.tsv', mode='w') as csv_file:
-  csv_writer = csv.writer(csv_file, delimiter = '\t', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
-  for comment, prediction in zip(comments, flat_predictions):
-    csv_writer.writerow([comment, prediction])
+print("  Krippendorff'a alpha: {0:.2f}".format(krippendorff.alpha(reliability_data=[labels,flat_predictions])))
+print(classification_report(labels, flat_predictions))
+
+#with open('../data/predictions/incivility_predictions_5000_03-06-20.tsv', mode='w') as csv_file:
+#  csv_writer = csv.writer(csv_file, delimiter = '\t', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+#  for comment, prediction in zip(comments, flat_predictions):
+#    csv_writer.writerow([comment, prediction])
