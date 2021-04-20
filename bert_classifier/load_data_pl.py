@@ -9,6 +9,8 @@ def get_data(csv_file):
 
     df = df[(df.polarization == 1) | (df.polarization == 0)]
 
+    df.dropna(inplace=True)
+
     labels = df.polarization.values
     comments = df.text.values
     print(labels)
