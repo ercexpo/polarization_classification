@@ -11,5 +11,7 @@ def get_data(csv_file):
 
     labels = df.polarization.values
     comments = df.text.values
+    print(labels)
+    print(comments)
     print('Number of training sentences: {:,}\n'.format(df.shape[0]))
     return comments, labels
