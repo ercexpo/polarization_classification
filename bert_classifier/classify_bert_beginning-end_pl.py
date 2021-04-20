@@ -33,6 +33,7 @@ val_comments, val_labels = load_data.get_data(sys.argv[2])
 
 def beginning_end(text):
     toks = text.split()
+    print(toks)
     start = toks[:256]
     end = toks[:-256]
     combo = ' '.join(start + end)
