@@ -33,10 +33,13 @@ val_comments, val_labels = load_data.get_data(sys.argv[2])
 
 def beginning_end(text):
     toks = text.split()
-    start = toks[:256]
-    end = toks[:-256]
-    combo = ' '.join(start + end)
-    return combo
+    if len(toks) < 512:
+        return text
+    else:
+        start = toks[:256]
+        end = toks[-256:]
+        combo = ' '.join(start + end)
+        return combo
 
 comments_mod = [beginning_end(comment) for comment in comments]
 val_comments_mod = [beginning_end(comment) for comment in val_comments]
