@@ -108,7 +108,7 @@ flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
 print("  Krippendorff'a alpha: {0:.2f}".format(krippendorff.alpha(reliability_data=[labels,flat_predictions])))
 print(classification_report(labels, flat_predictions))
 
-#with open('../data/predictions/incivility_predictions_5000_03-06-20.tsv', mode='w') as csv_file:
-#  csv_writer = csv.writer(csv_file, delimiter = '\t', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
-#  for comment, prediction in zip(comments, flat_predictions):
-#    csv_writer.writerow([comment, prediction])
+with open(sys.argv[2], mode='w') as csv_file:
+  csv_writer = csv.writer(csv_file, delimiter = '\t', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+  for comment, prediction in zip(comments, flat_predictions):
+    csv_writer.writerow([comment, prediction])
