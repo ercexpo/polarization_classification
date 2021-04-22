@@ -113,7 +113,7 @@ validation_masks = torch.tensor(val_attention_masks)
 # For fine-tuning Bert on a specific task, the authors recommend a batch size of
 # 16 or 32.
 
-batch_size = 6
+batch_size = 8
 
 # Create the DataLoader for our training set.
 train_data = TensorDataset(train_inputs, train_masks, train_labels)
