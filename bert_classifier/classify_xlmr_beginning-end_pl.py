@@ -142,7 +142,7 @@ model.cuda()
 # Note: AdamW is a class from the huggingface library (as opposed to pytorch)
 # I believe the 'W' stands for 'Weight Decay fix"
 optimizer = AdamW(model.parameters(),
-                  lr = 6e-5, # args.learning_rate - default is 5e-5, our notebook had 2e-5
+                  lr = 1e-5, # args.learning_rate - default is 5e-5, our notebook had 2e-5
                   eps = 1e-8 # args.adam_epsilon  - default is 1e-8.
                 )
 
