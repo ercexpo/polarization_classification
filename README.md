@@ -13,7 +13,3 @@ Our training dataset consists of 2278 articles coded by trained annotators for p
 Overall model results:
 
 ![ml_results](https://github.com/ercexpo/polarization_classification/blob/master/multilingual_results_polarization.png)
-<<<<<<< HEAD
-
-=======
->>>>>>> 93cb5527a7d13143b412230e5b0f48b3f5e9337d
