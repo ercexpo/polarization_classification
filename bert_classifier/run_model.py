@@ -26,9 +26,9 @@ else:
     print('No GPU available, using the CPU instead.')
     device = torch.device("cpu")
 
-model = BertForSequenceClassification.from_pretrained('models/bert_multilingual')
+model = BertForSequenceClassification.from_pretrained('models/multilingual')
 #config = BertConfig.from_json_file('../models/bert_classifier_2epoch_256size/config.json')
-tokenizer = BertTokenizer.from_pretrained('models/bert_multilingual')
+tokenizer = BertTokenizer.from_pretrained('models/multilingual')
 
 model.cuda()
 
