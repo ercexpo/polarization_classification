@@ -1,7 +1,7 @@
 import pandas as pd
 import torch
 from transformers import BertTokenizer
-import load_data
+import load_data_run as load_data
 import sys, time, datetime, random, csv
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
@@ -33,7 +33,7 @@ tokenizer = BertTokenizer.from_pretrained('models/bert_multilingual')
 model.cuda()
 
 #load comments and labels from the input tsv
-comments, labels = load_data.get_data(sys.argv[1])
+comments = load_data.get_data(sys.argv[1])
 
 #encode inputs using BERT tokenizer
 input_ids = []
@@ -49,18 +49,15 @@ for sent in input_ids:
     att_mask = [int(token_id > 0) for token_id in sent]
     attention_masks.append(att_mask)
 
-labels = labels.astype(np.int)
-
 batch_size = 16
 
 # Create the DataLoader for our training set.
 # Convert to tensors.
 prediction_inputs = torch.tensor(input_ids)
 prediction_masks = torch.tensor(attention_masks)
-prediction_labels = torch.tensor(labels)
 
 # Create the DataLoader.
-prediction_data = TensorDataset(prediction_inputs, prediction_masks, prediction_labels)
+prediction_data = TensorDataset(prediction_inputs, prediction_masks)
 prediction_sampler = SequentialSampler(prediction_data)
 prediction_dataloader = DataLoader(prediction_data, sampler=prediction_sampler, batch_size=batch_size)
 
@@ -72,7 +69,7 @@ print('Predicting labels for {:,} test sentences...'.format(len(prediction_input
 model.eval()
 
 # Tracking variables
-predictions , true_labels = [], []
+predictions = []
 
 # Predict
 for batch in prediction_dataloader:
@@ -80,7 +77,7 @@ for batch in prediction_dataloader:
   batch = tuple(t.to(device) for t in batch)
 
   # Unpack the inputs from our dataloader
-  b_input_ids, b_input_mask, b_labels = batch
+  b_input_ids, b_input_mask = batch
 
   # Telling the model not to compute or store gradients, saving memory and
   # speeding up prediction
@@ -93,11 +90,9 @@ for batch in prediction_dataloader:
 
   # Move logits and labels to CPU
   logits = logits.detach().cpu().numpy()
-  label_ids = b_labels.to('cpu').numpy()
 
   # Store predictions and true labels
   predictions.append(logits)
-  true_labels.append(label_ids)
 
 print('    DONE.')
 
@@ -105,8 +100,8 @@ print('    DONE.')
 flat_predictions = [item for sublist in predictions for item in sublist]
 flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
 
-print("  Krippendorff'a alpha: {0:.2f}".format(krippendorff.alpha(reliability_data=[labels,flat_predictions])))
-print(classification_report(labels, flat_predictions))
+#print("  Krippendorff'a alpha: {0:.2f}".format(krippendorff.alpha(reliability_data=[labels,flat_predictions])))
+#print(classification_report(labels, flat_predictions))
 
 with open(sys.argv[2], mode='w') as csv_file:
   csv_writer = csv.writer(csv_file, delimiter = '\t', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
