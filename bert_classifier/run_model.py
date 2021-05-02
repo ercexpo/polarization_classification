@@ -104,6 +104,6 @@ flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
 #print(classification_report(labels, flat_predictions))
 
 with open(sys.argv[2], mode='w') as csv_file:
-  csv_writer = csv.writer(csv_file, delimiter = '\t', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+  csv_writer = csv.writer(csv_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
   for comment, prediction in zip(comments, flat_predictions):
     csv_writer.writerow([comment, prediction])
