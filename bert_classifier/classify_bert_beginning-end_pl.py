@@ -2,7 +2,7 @@ import torch
 import pandas as pd
 from transformers import BertTokenizer
 import load_data_pl as load_data
-import sys, time, datetime, random
+import sys, time, datetime, random, math
 #from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, classification_report
@@ -147,14 +147,14 @@ optimizer = AdamW(model.parameters(),
                 )
 
 # Number of training epochs (authors recommend between 2 and 4)
-epochs = 4
+epochs = 2
 
 # Total number of training steps is number of batches * number of epochs.
 total_steps = len(train_dataloader) * epochs
 
 # Create the learning rate scheduler.
 scheduler = get_linear_schedule_with_warmup(optimizer,
-                                            num_warmup_steps = 0, # Default value in run_glue.py
+                                            num_warmup_steps = math.floor(total_steps/10), # Default value in run_glue.py
                                             num_training_steps = total_steps)
 
 def flat_accuracy(preds, labels):
