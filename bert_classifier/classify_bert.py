@@ -32,7 +32,7 @@ val_comments, val_labels = load_data.get_data(sys.argv[2])
 # Load the BERT tokenizer.
 print('Loading BERT tokenizer...')
 #tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased')
 
 #encode inputs using BERT tokenizer
 input_ids = []
@@ -98,7 +98,7 @@ validation_masks = torch.tensor(val_attention_masks)
 # For fine-tuning BERT on a specific task, the authors recommend a batch size of
 # 16 or 32.
 
-batch_size = 6
+batch_size = 8
 
 # Create the DataLoader for our training set.
 train_data = TensorDataset(train_inputs, train_masks, train_labels)
@@ -113,7 +113,7 @@ validation_dataloader = DataLoader(validation_data, sampler=validation_sampler, 
 # Load BertForSequenceClassification, the pretrained BERT model with a single
 # linear classification layer on top.
 model = BertForSequenceClassification.from_pretrained(
-    "bert-base-uncased", # Use the 12-layer BERT model, with an uncased vocab.
+    "bert-base-multilingual-cased", # Use the 12-layer BERT model, with an uncased vocab.
     num_labels = 2, # The number of output labels--2 for binary classification.
                     # You can increase this for multi-class tasks.
     output_attentions = False, # Whether the model returns attentions weights.
@@ -127,12 +127,12 @@ model.cuda()
 # Note: AdamW is a class from the huggingface library (as opposed to pytorch)
 # I believe the 'W' stands for 'Weight Decay fix"
 optimizer = AdamW(model.parameters(),
-                  lr = 5e-5, # args.learning_rate - default is 5e-5, our notebook had 2e-5
+                  lr = 2e-5, # args.learning_rate - default is 5e-5, our notebook had 2e-5
                   eps = 1e-8 # args.adam_epsilon  - default is 1e-8.
                 )
 
 # Number of training epochs (authors recommend between 2 and 4)
-epochs = 2
+epochs = 3
 
 # Total number of training steps is number of batches * number of epochs.
 total_steps = len(train_dataloader) * epochs
