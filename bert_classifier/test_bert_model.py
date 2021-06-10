@@ -1,7 +1,7 @@
 import torch
 import pandas as pd
 from transformers import BertTokenizer
-import load_data_pl as load_data
+import load_data_test as load_data
 import sys, time, datetime, random
 #from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
