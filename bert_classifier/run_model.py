@@ -33,7 +33,7 @@ tokenizer = BertTokenizer.from_pretrained('models/multilingual3')
 model.cuda()
 
 #load comments and labels from the input tsv
-comments = load_data.get_data(sys.argv[1])
+ids, comments = load_data.get_data(sys.argv[1])
 
 #encode inputs using BERT tokenizer
 input_ids = []
@@ -105,5 +105,5 @@ flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
 
 with open(sys.argv[2], mode='w') as csv_file:
   csv_writer = csv.writer(csv_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
-  for comment, prediction in zip(comments, flat_predictions):
-    csv_writer.writerow([comment, prediction])
+  for id, comment, prediction in zip(ids, comments, flat_predictions):
+    csv_writer.writerow([id, comment, prediction])
