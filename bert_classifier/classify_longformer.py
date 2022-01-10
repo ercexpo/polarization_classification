@@ -1,7 +1,7 @@
 import torch
 import pandas as pd
 from transformers import LongformerTokenizer, LongformerForSequenceClassification
-import load_data
+import load_data_pl as load_data
 import sys, time, datetime, random
 #from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
@@ -62,7 +62,7 @@ validation_labels = torch.tensor(val_labels)
 # For fine-tuning BERT on a specific task, the authors recommend a batch size of
 # 16 or 32.
 
-batch_size = 6
+batch_size = 4
 
 # Create the DataLoader for our training set.
 print(encoded_comments)
@@ -98,7 +98,7 @@ optimizer = AdamW(model.parameters(),
                 )
 
 # Number of training epochs (authors recommend between 2 and 4)
-epochs = 2
+epochs = 4
 
 # Total number of training steps is number of batches * number of epochs.
 total_steps = len(train_dataloader) * epochs

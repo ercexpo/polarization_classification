@@ -26,14 +26,14 @@ else:
     print('No GPU available, using the CPU instead.')
     device = torch.device("cpu")
 
-model = BertForSequenceClassification.from_pretrained('models/multilingual')
+model = BertForSequenceClassification.from_pretrained('models/multilingual3')
 #config = BertConfig.from_json_file('../models/bert_classifier_2epoch_256size/config.json')
-tokenizer = BertTokenizer.from_pretrained('models/multilingual')
+tokenizer = BertTokenizer.from_pretrained('models/multilingual3')
 
 model.cuda()
 
 #load comments and labels from the input tsv
-comments = load_data.get_data(sys.argv[1])
+ids, comments = load_data.get_data(sys.argv[1])
 
 #encode inputs using BERT tokenizer
 input_ids = []
@@ -104,6 +104,6 @@ flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
 #print(classification_report(labels, flat_predictions))
 
 with open(sys.argv[2], mode='w') as csv_file:
-  csv_writer = csv.writer(csv_file, delimiter = '\t', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
-  for comment, prediction in zip(comments, flat_predictions):
-    csv_writer.writerow([comment, prediction])
+  csv_writer = csv.writer(csv_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+  for id, comment, prediction in zip(ids, comments, flat_predictions):
+    csv_writer.writerow([id, comment, prediction])

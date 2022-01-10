@@ -1,3 +1,5 @@
+# polarization
+=======
 # BERT-based classifier for political polarization in English, Dutch, and Polish news articles:
 
 In order to automatically classify online news articles as containing politically polarizing language or not, we developed a neural binary classifier built on top of a large transformer-based language model, namely BERT (Devlin et al.,2019).
@@ -13,4 +15,3 @@ Our training dataset consists of 2278 articles coded by trained annotators for p
 Overall model results:
 
 ![ml_results](https://github.com/ercexpo/polarization_classification/blob/master/multilingual_results_polarization.png)
-

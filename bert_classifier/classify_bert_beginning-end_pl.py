@@ -2,7 +2,7 @@ import torch
 import pandas as pd
 from transformers import BertTokenizer
 import load_data_pl as load_data
-import sys, time, datetime, random
+import sys, time, datetime, random, math
 #from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, classification_report
@@ -133,6 +133,8 @@ model = BertForSequenceClassification.from_pretrained(
                     # You can increase this for multi-class tasks.
     output_attentions = False, # Whether the model returns attentions weights.
     output_hidden_states = False, # Whether the model returns all hidden-states.
+    attention_probs_dropout_prob=0.1,
+    hidden_dropout_prob=0.1
 )
 
 # Tell pytorch to run this model on the GPU.
@@ -142,19 +144,20 @@ model.cuda()
 # Note: AdamW is a class from the huggingface library (as opposed to pytorch)
 # I believe the 'W' stands for 'Weight Decay fix"
 optimizer = AdamW(model.parameters(),
-                  lr = 1e-5, # args.learning_rate - default is 5e-5, our notebook had 2e-5
-                  eps = 1e-8 # args.adam_epsilon  - default is 1e-8.
+                  lr = 2e-5, # args.learning_rate - default is 5e-5, our notebook had 2e-5
+                  eps = 1e-8, # args.adam_epsilon  - default is 1e-8.
+                  weight_decay=0.05
                 )
 
 # Number of training epochs (authors recommend between 2 and 4)
-epochs = 4
+epochs = 3
 
 # Total number of training steps is number of batches * number of epochs.
 total_steps = len(train_dataloader) * epochs
 
 # Create the learning rate scheduler.
 scheduler = get_linear_schedule_with_warmup(optimizer,
-                                            num_warmup_steps = 0, # Default value in run_glue.py
+                                            num_warmup_steps = math.floor(total_steps/10), # Default value in run_glue.py
                                             num_training_steps = total_steps)
 
 def flat_accuracy(preds, labels):
